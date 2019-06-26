@@ -70,4 +70,5 @@ int main() {
   }
   printf("\n");
   /******************/
+  free(dynaArr);
 }
