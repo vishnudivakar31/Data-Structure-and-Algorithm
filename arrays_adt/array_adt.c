@@ -25,6 +25,25 @@ int append(struct Array *arr, int item) {
   return 0;
 }
 
+struct Array * merge(struct Array *a1, struct Array *a2) {
+  int a1Size = a1->length, a2Size = a2->length, i = 0, j = 0;
+  struct Array *result = initialize(a1Size + a2Size);
+  while(i < a1Size && j < a2Size) {
+    if(a1->a[i] < a2->a[j]) {
+      append(result, a1->a[i++]);
+    } else {
+      append(result, a2->a[j++]);
+    }
+  }
+  for(; i < a1Size; i++) {
+    append(result, a1->a[i]);
+  }
+  for(; j < a2Size; j++) {
+    append(result, a2->a[j]);
+  }
+  return result;
+}
+
 int insert(struct Array *arr, int index, int item) {
   if(index >= arr->length || index < 0) {
     return -1;
@@ -192,13 +211,97 @@ void leftRotate(struct Array *arr) {
   arr->a[i - 1] = temp;
 }
 
+int sortInsert(struct Array *arr, int item) {
+  int i = arr->length - 1;
+  for(; i >= 0 && arr->a[i] > item; i--) {
+    arr->a[i + 1] = arr->a[i];
+  }
+  arr->a[i + 1] = item;
+  arr->length += 1;
+  return 1;
+}
+
+_Bool isSorted(struct Array *arr) {
+  int i = 0;
+  for(; (i < arr->length - 1) && (arr->a[i] < arr->a[i + 1]); i++);
+  return i == (arr->length - 1);
+}
+
+void arrangeNegative(struct Array *arr) {
+  int i = 0, j = arr->length - 1, temp = 0;
+  while(i <= j) {
+    while(arr->a[i] < 0 && i < arr->length) i++;
+    while(arr->a[j] > 0 && j > 0) j--;
+    temp = arr->a[i];
+    arr->a[i] = arr->a[j];
+    arr->a[j] = temp;
+  }
+}
+
+struct Array* customUnion(struct Array *a1, struct Array *a2)  {
+  int size1 = a1->length, size2 = a2->length, i = 0, j = 0;
+  struct Array *result = initialize(size1 + size2);
+  while (i < size1 && j < size2) {
+    if(a1->a[i] < a2->a[j]) {
+      append(result, a1->a[i++]);
+    } else if(a2->a[j] < a1->a[i]) {
+      append(result, a2->a[j++]);
+    } else {
+      append(result, a1->a[i++]);
+      j++;
+    }
+  }
+  for(; i < size1; i++) {
+    append(result, a1->a[i]);
+  }
+  for(; j < size2; j++) {
+    append(result, a2->a[j]);
+  }
+  return result;
+}
+
+struct Array* intersection(struct Array *a1. struct Array *a2) {
+  int size1 = a1->length, size2 = a2->length, i = 0, j = 0;
+  struct Array *result = initialize(size1 + size2);
+  while (i < size1 && j < size2) {
+    if(a1->a[i] < a2->a[j]) {
+      i++;
+    } else if(a2->a[j] < a1->a[1]) {
+      j++;
+    } else {
+      append(result, a1->a[i++]);
+      j++;
+    }
+  }
+  return result;
+}
+
+struct Array* difference(struct Array *a1, struct Array *a2)  {
+  int size1 = a1->length, size2 = a2->length, i = 0, j = 0;
+  struct Array *result = initialize(size1 + size2);
+  while (i < size1 && j < size2) {
+    if(a1->a[i] < a2->a[j]) {
+      append(result, a1->a[i++]);
+    } else if(a2->a[j] < a1->a[i]) {
+      j++;
+    } else {
+      i++;
+      j++;
+    }
+  }
+  for(; i < size1; i++) {
+    append(result, a1->a[i]);
+  }
+  return result;
+}
+
 void destroy(struct Array *arr) {
   free(arr->a);
   free(arr);
 }
 
 int main() {
-  struct Array *arr;
+  struct Array *arr, *arr1, *result;
   int size = 0, length = 0, i = 0, item = 0, index = 0;
 
   printf("Enter the size of array req.: ");
@@ -218,26 +321,38 @@ int main() {
     append(arr, item);
   }
 
-  printf("The array is as follows: \n");
+  /* 2nd Array */
+  printf("Enter the size of array req.: ");
+  scanf("%d", &size);
+  arr1 = initialize(size);
+
+  printf("Enter the number of items to enter. (Should be less than or equal to %d): ", size);
+  scanf("%d", &length);
+
+  if(length > size) {
+    return -1;
+  }
+
+  for(i = 0; i < length; i++) {
+    printf("Enter item: ");
+    scanf("%d", &item);
+    append(arr1, item);
+  }
+  /*************/
+
+  printf("Array 1. \n");
   display(arr);
 
-  printf("Sum of arrays: %d\n", sum(arr));
-  printf("Avg of arrays: %f\n", avg(arr));
-  printf("Max of arrays: %d\n", max(arr));
-  printf("Min of arrays: %d\n", min(arr));
+  printf("Array 2. \n");
+  display(arr1);
 
-  printf("Array Reversed.\n");
-  reverse(arr);
-  display(arr);
+  result = merge(arr, arr1);
+  printf("Merged Array. \n");
+  display(result);
 
-  printf("Array left shifted.\n");
-  leftShift(arr);
-  display(arr);
-
-  printf("Array left rotated.\n");
-  leftRotate(arr);
-  display(arr);
 
   destroy(arr);
+  destroy(arr1);
+  destroy(result);
   return 0;
 }
