@@ -167,6 +167,99 @@ int isSorted(struct LinkedList *ptr) {
   return 1;
 }
 
+void removeDuplicate(struct LinkedList *ll) {
+  struct Node *currNode = ll->head, *nextNode;
+  if(currNode == NULL) {
+    return;
+  }
+  nextNode = currNode->next;
+  while(nextNode != NULL) {
+    if(currNode->data == nextNode->data) {
+      currNode->next = nextNode->next;
+      free(nextNode);
+      nextNode = currNode->next;
+      ll->length -= 1;
+    } else {
+      currNode = currNode->next;
+      nextNode = nextNode->next;
+    }
+  }
+}
+
+void reverseUsingArray(struct LinkedList *ll) {
+  int *aux = (int *) malloc(ll->length * sizeof(int)), i = 0;
+  struct Node *currNode = ll->head;
+  while(currNode != NULL) {
+    aux[i++] = currNode->data;
+    currNode = currNode->next;
+  }
+  currNode = ll->head;
+  i -= 1;
+  while(i >= 0) {
+    currNode->data = aux[i--];
+    currNode = currNode->next;
+  }
+  free(aux);
+}
+
+void reverseUsingSP(struct LinkedList *ll) {
+  struct Node *thirdNode = NULL, *swapNode = NULL, *currNode = ll->head;
+  while(currNode != NULL) {
+    thirdNode = swapNode;
+    swapNode = currNode;
+    currNode = currNode->next;
+    swapNode->next = thirdNode;
+  }
+  ll->head = swapNode;
+}
+
+void reverseUsingRecursion(struct LinkedList *ll, struct Node *currNode, struct Node *nextNode) {
+  if(nextNode != NULL) {
+    reverseUsingRecursion(ll, currNode, currNode->next);
+    currNode->next = nextNode;
+  } else {
+    ll->head = currNode;
+  }
+}
+
+struct LinkedList concat(struct LinkedList *s1, struct LinkedList *s2) {
+  struct Node *node1 = s1->head, *node2 = s2->head;
+  struct LinkedList result;
+  initialize(&result);
+  result.head = node1;
+  result.last = s2->last;
+  result.length = s1->length + s2->length;
+  while(node1 != NULL) {
+    append(&result, node1->data);
+    node1 = node1->next;
+  }
+  while(node2 != NULL) {
+    append(&result, node2->data);
+    node2 = node2->next;
+  }
+  return result;
+}
+
+struct LinkedList merge(struct LinkedList *s1, struct LinkedList *s2) {
+  struct Node *node1 = s1->head, *node2 = s2->head;
+  struct LinkedList result;
+  initialize(&result);
+  while(node1 != NULL && node2 != NULL) {
+    if(node1->data < node2->data) {
+      append(&result, node1->data);
+      node1 = node1->next;
+    } else if(node2->data < node1->data) {
+      append(&result, node2->data);
+      node2 = node2->next;
+    } else {
+      append(&result, node1->data);
+      node1 = node1->next;
+      node2 = node2->next;
+    }
+  }
+  return result;
+}
+
 int menu() {
   int choice;
   printf("**********\n");
@@ -182,8 +275,12 @@ int menu() {
   printf("8. Insert element at a postion.\n");
   printf("9. Insert element in a sorted way.\n");
   printf("10. Delete data.\n");
-  printf("11. Exit.\n");
-  printf("Enter the choice(1 - 11): ");
+  printf("11. Remove Duplicates.\n");
+  printf("12. Reverse list using aux.\n");
+  printf("13. Reverse list using slide pointer.\n");
+  printf("14. Reverse list using recursion.\n");
+  printf("15. Exit.\n");
+  printf("Enter the choice(1 - 15): ");
   scanf("%d", &choice);
   return choice;
 }
@@ -225,10 +322,22 @@ int main() {
                scanf("%d", &key);
                printf("Item %s.\n", delete(&ll, key) == -1 ? "not deleted. Please check." : "is deleted");
                break;
-      case 11: printf("Closing...\n");
+      case 11: removeDuplicate(&ll);
+               display(&ll);
+               break;
+      case 12: reverseUsingArray(&ll);
+               display(&ll);
+               break;
+      case 13: reverseUsingSP(&ll);
+               display(&ll);
+               break;
+      case 14: reverseUsingRecursion(&ll, ll.head, ll.head);
+               display(&ll);
+               break;
+      case 15: printf("Closing...\n");
               break;
       default: printf("Invalid Choice.\n");
     }
-  } while(choice != 11);
+  } while(choice != 15);
   return 0;
 }
