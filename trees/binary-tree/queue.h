@@ -1,17 +1,8 @@
 #include<iostream>
+#include"TreeNode.h"
+#include"Node.h"
 
 using namespace std;
-
-struct TreeNode {
-  struct TreeNode *left;
-  struct TreeNode *right;
-  int data;
-};
-
-struct Node {
-  struct TreeNode *data;
-  struct Node *next;
-};
 
 class Queue {
   private:

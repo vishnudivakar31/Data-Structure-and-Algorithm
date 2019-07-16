@@ -1,5 +1,7 @@
 #include<iostream>
 #include"tree.h"
+#include"queue.h"
+#include"stack.h"
 
 using namespace std;
 
@@ -10,10 +12,7 @@ Tree::Tree() {
 Tree::~Tree() {
   Queue queue;
   struct TreeNode *currNode = root;
-  if(currNode) {
-    queue.enqueue(currNode);
-  }
-  while(!queue.isEmpty()) {
+  while(currNode) {
     if(currNode->left) {
       queue.enqueue(currNode->left);
     }
@@ -21,7 +20,7 @@ Tree::~Tree() {
       queue.enqueue(currNode->right);
     }
     delete currNode;
-    currNode = queue.dequeue();
+    currNode = queue.isEmpty() ? NULL : queue.dequeue();
   }
 };
 void Tree::append(int data) {
@@ -62,4 +61,43 @@ void Tree::append(int data) {
      }
      currNode = queue.isEmpty() ? NULL : queue.dequeue();
    }
- }
+}
+
+void Tree::preorder_recur(struct TreeNode *node) {
+  if(node != NULL) {
+    cout<<node->data<<endl;
+    preorder_recur(node->left);
+    preorder_recur(node->right);
+  }
+}
+
+void Tree::display_preorder_recur() {
+ preorder_recur(root);
+}
+
+void Tree::inorder_recur(struct TreeNode *node) {
+  if(node != NULL) {
+    inorder_recur(node->left);
+    cout<<node->data<<endl;
+    inorder_recur(node->right);
+  }
+}
+
+void Tree::display_inorder_recur() {
+ inorder_recur(root);
+}
+
+void Tree::display_pre_order() {
+  struct TreeNode *currNode = root;
+  Stack stack;
+  while (currNode != NULL || !stack.isEmpty()) {
+    if(currNode != NULL) {
+      cout<<currNode->data<<endl;
+      stack.push(currNode);
+      currNode = currNode->left;
+    } else {
+      currNode = stack.pop();
+      currNode = currNode->right;
+    }
+  }
+}
