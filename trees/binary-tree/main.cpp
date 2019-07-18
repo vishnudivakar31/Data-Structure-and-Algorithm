@@ -10,7 +10,7 @@ int main() {
     for(int i = 0; i < 7; i++) {
       tree.append(arr[i]);
     }
-    tree.display_pre_order();
+    cout<<tree.countNodes()<<endl;
   } catch(const char *err) {
     cerr<<err<<endl;
   }

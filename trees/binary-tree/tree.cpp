@@ -101,3 +101,47 @@ void Tree::display_pre_order() {
     }
   }
 }
+
+void Tree::display_in_order() {
+  struct TreeNode *currNode = root;
+  Stack stack;
+  while(currNode != NULL || !stack.isEmpty()) {
+    if(currNode != NULL) {
+      stack.push(currNode);
+      currNode = currNode->left;
+    } else {
+      currNode = stack.pop();
+      cout<<currNode->data<<endl;
+      currNode = currNode->right;
+    }
+  }
+}
+
+void Tree::display_level_order() {
+  struct TreeNode *currNode = root;
+  Queue queue;
+  while(currNode != NULL) {
+    if(currNode->left) {
+      queue.enqueue(currNode->left);
+    }
+    if(currNode->right) {
+      queue.enqueue(currNode->right);
+    }
+    cout<<currNode->data<<endl;
+    currNode = queue.isEmpty() ? NULL : queue.dequeue();
+  }
+}
+
+int Tree::countNodesRecur(struct TreeNode *node) {
+  int x, y;
+  if(node != NULL) {
+    x = countNodesRecur(node->left);
+    y = countNodesRecur(node->right);
+    return x + y + 1;
+  }
+  return 0;
+}
+
+int Tree::countNodes() {
+  return countNodesRecur(root);
+}

@@ -9,6 +9,7 @@ class Tree {
     int length;
     void preorder_recur(struct TreeNode *node);
     void inorder_recur(struct TreeNode *node);
+    int countNodesRecur(struct TreeNode *node);
   public:
     Tree();
     ~Tree();
@@ -17,4 +18,7 @@ class Tree {
     void display_preorder_recur();
     void display_inorder_recur();
     void display_pre_order();
+    void display_in_order();
+    void display_level_order();
+    int countNodes();
 };
